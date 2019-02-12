@@ -1,0 +1,30 @@
+#nav {
+    display: flex;
+    justify-content: space-between;
+}
+
+.current-date{
+    background-color: #d4f8d4;
+}
+
+tr:nth-child(even) {
+    background-color: #e5fbe5;
+}
+
+tr:nth-child(odd) {
+    background-color: #fff;
+}
+
+td:hover{
+    background-color: #f6fef6;
+}
+
+button{
+    background-color: transparent;
+    border-color: transparent;
+    font-size: large;
+}
+
+.hide{
+    display: none;
+}
