@@ -15,9 +15,15 @@ window.addEventListener('load', function () {
     localStorage.clear();
     // adding calendar component
     let bodyElement = $('body').addElement('calendar-component');
-    let calendar = $('calendar-component');
-    let calendarBody = $('.container').addClass('hide');
-    CalendarComponent.calendar(calendar);
+    let calendar = $('calendar-component').setAttribute('style', 'display: none').setAttribute('class', 'hide');
+    let calendarBody = $('.container');
+    calendarBody.addClass('hide');
+    let calendarComponent = new CalendarComponent('datepicker');
+    calendarComponent.calendar(calendar);
+    let datepickerInput = $('#datepicker');
+    datepickerInput.elems[0].addEventListener('click', function () {
+        calendar.toggleClass('hide');
+    });
 
     let today = new Date();
     let currentMonth = today.getMonth();
@@ -133,7 +139,6 @@ window.addEventListener('load', function () {
 
     function addDate() {
         $('td').elems.forEach(e => e.addEventListener('click', function () {
-            let datepickerInput = $('#datepicker');
             datepickerInput.elems[0].setAttribute('innerText', '');
             let date = e.id.split('-').pop();
             let eventDate = `${currentYear}-${months[currentMonth]}-${date}`;

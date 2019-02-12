@@ -62,6 +62,16 @@ let $ = (function () {
         });
         return this;
     };
+    
+    Constructor.prototype.toggleClass = function (className) {
+        this.each(function (item) {
+            if(item.classList.contains(className)){
+                item.classList.remove(className);
+            } else {
+                item.classList.add(className);
+            }
+        })
+    };
 
 
     /**

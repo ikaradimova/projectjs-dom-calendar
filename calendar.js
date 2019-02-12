@@ -3,7 +3,10 @@ window.addEventListener('load', function () {
     // adding calendar component
     let bodyElement = $('body').addElement('calendar-component');
     let calendar = $('calendar-component');
-    CalendarComponent.calendar(calendar);
+    let calendarComponent = new CalendarComponent('calendar', 'week');
+    calendarComponent.calendar(calendar);
+    let calendarComponentType = calendarComponent.getOptions();
+    console.log(calendarComponentType);
 
     let today = new Date();
     let currentMonth = today.getMonth();
@@ -15,30 +18,90 @@ window.addEventListener('load', function () {
 
     let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-    showCalendar(currentMonth, currentYear);
+    let startWeek = 0;
+
+    switch (calendarComponentType) {
+        case 'month':
+            showCalendar(currentMonth, currentYear, null);
+            break;
+        case 'week':
+            showCalendar(currentMonth, currentYear, startWeek);
+            break;
+    }
+    // showCalendar(currentMonth, currentYear, startWeek);
+    // let tr = $(`#row-${0}`).elems[0];
+    // console.log(tr);
+    // let table = $('#calendar-body'); // body of the calendar
+    //
+    // // clearing all previous cells
+    // table.setAttribute('innerHtml', '');
+    // table.addElement(tr);
+    // let row = $('tr').elems.pop();
+    // row.setAttribute('id', `row-${0}`);
+
     addEvent();
     showEvent();
 
     function previous() {
-        currentYear = (currentMonth === 0) ? currentYear - 1 : currentYear;
-        currentMonth = (currentMonth === 0) ? 11 : currentMonth - 1;
-        showCalendar(currentMonth, currentYear);
+        switch (calendarComponentType) {
+            case 'month':
+                currentYear = (currentMonth === 0) ? currentYear - 1 : currentYear;
+                currentMonth = (currentMonth === 0) ? 11 : currentMonth - 1;
+                showCalendar(currentMonth, currentYear);
+
+                break;
+            case 'week':
+                if(startWeek === 0){
+                    startWeek = 4;
+                    currentYear = (currentMonth === 0) ? currentYear - 1 : currentYear;
+                    currentMonth = (currentMonth === 0) ? 11 : currentMonth - 1;
+                }
+                console.log(--startWeek);
+                showCalendar(currentMonth, currentYear, startWeek);
+                // startWeek--;
+                break;
+        }
         addEvent();
         showEvent();
+
     }
 
     function next() {
-        currentYear = (currentMonth === 11) ? currentYear + 1 : currentYear;
-        currentMonth = (currentMonth + 1) % 12;
-        showCalendar(currentMonth, currentYear);
+        switch (calendarComponentType) {
+            case 'month':
+                currentYear = (currentMonth === 11) ? currentYear + 1 : currentYear;
+                currentMonth = (currentMonth + 1) % 12;
+                showCalendar(currentMonth, currentYear);
+                break;
+            case 'week':
+                // startWeek++;
+                if(startWeek === 4){
+                    startWeek = -1;
+                    currentYear = (currentMonth === 11) ? currentYear + 1 : currentYear;
+                    currentMonth = (currentMonth + 1) % 12;
+                }
+                console.log(++startWeek);
+                showCalendar(currentMonth, currentYear, startWeek);
+                // startWeek++;
+                break;
+        }
         addEvent();
         showEvent();
     }
 
     function jump() {
-        currentYear = parseInt(selectYear.value);
-        currentMonth = parseInt(selectMonth.value);
-        showCalendar(currentMonth, currentYear);
+        switch (calendarComponentType) {
+            case 'month':
+                currentYear = parseInt(selectYear.value);
+                currentMonth = parseInt(selectMonth.value);
+                showCalendar(currentMonth, currentYear, null);
+                break;
+            case 'week':
+                currentYear = parseInt(selectYear.value);
+                currentMonth = parseInt(selectMonth.value);
+                showCalendar(currentMonth, currentYear, 0);
+                break;
+        }
         addEvent();
         showEvent();
     }
@@ -59,12 +122,14 @@ window.addEventListener('load', function () {
         jump();
     });
 
-    function showCalendar(month, year) {
-
+    function showCalendar(month, year, rowNumber) {
+        console.log(rowNumber);
         // gets the first day of the current month and year
         let firstDayOfCurrentMonth = (new Date(year, month)).getDay();
+        let lastDayOfLastMonthNum = (new Date(year, month, 0)).getDay();
+        let lastDayOfLastMonth = (new Date(year, month, 0)).getDate();
 
-        let table = $('#calendar-body'); // body of the calendar
+        let table = $('tbody'); // body of the calendar
 
         // clearing all previous cells
         table.setAttribute('innerHtml', '');
@@ -74,36 +139,135 @@ window.addEventListener('load', function () {
 
         // creating all cells
         let date = 1;
-        for (let i = 0; i < 6; i++) {
-            table.addElement('tr');
-            let row = $('tr').elems.pop();
-            row.setAttribute('id', `row-${i}`);
+        let addDaysTillEnd = 0;
 
-            //creating individual cells, filing them up with data.
-            for (let j = 1; j <= 7; j++) {
-                let curRow = $(`#row-${i}`);
-                // console.log(curRow);
-                if (i === 0 && j < firstDayOfCurrentMonth) {
-                    curRow.addElement('td', '');
+        switch (calendarComponentType) {
+            case 'month':
+                console.log(rowNumber);
+                for (let i = 0; i < 5; i++) {
+                    table.addElement('tr');
+                    let row = $('tr').elems.pop();
+                    row.setAttribute('id', `row-${i}`);
+
+                    //creating individual cells, filing them up with data.
+                    for (let j = 1; j <= 7; j++) {
+                        let curRow = $(`#row-${i}`);
+                        // console.log(curRow);
+                        if (i === 0 && j < firstDayOfCurrentMonth) {
+                            curRow.addElement('td', lastDayOfLastMonth - lastDayOfLastMonthNum + j);
+                            let currentCell = $('td').elems.pop();
+                            currentCell.setAttribute('class', 'previous-month-days');
+                        }
+                        else if (date > daysInMonth(month, year)) {
+                            curRow.addElement('td', 1 + addDaysTillEnd);
+                            addDaysTillEnd++;
+                            let currentCell = $('td').elems.pop();
+                            currentCell.setAttribute('class', 'next-month-days');
+                            // console.log(addDaysTillEnd);
+                            //lastDayOfCurrentMonthNum
+                            // break;
+                        }
+
+                        else {
+                            let cell = curRow.addElement('td', date);
+                            let currentCell = $('td').elems.pop();
+                            currentCell.setAttribute('id', `#cell-${date}`);
+                            // console.log(currentCell);
+                            // cell.addElement('div', 'No events on this date')
+                            //     .setAttribute('class', 'popup')
+                            //     .setAttribute('style', 'display: none');
+                            if (date === today.getDate() &&
+                                year === today.getFullYear() &&
+                                month === today.getMonth()) {
+                                currentCell.setAttribute('class', 'current-date');
+                            } // color today's date
+                            date++;
+                        }
+                    }
                 }
-                else if (date > daysInMonth(month, year)) {
-                    break;
+                break;
+            case 'week':
+                console.log(rowNumber);
+                // let i = 0;
+                // while (i <= rowNumber) {
+                for (let i = 0; i <= rowNumber; i++) {
+                    // console.log(i);
+                    //     console.log(rowNumber);
+                        table.addElement('tr');
+                        let row = $('tr').elems.pop();
+                        row.setAttribute('id', `row-${i}`);
+
+                        //creating individual cells, filing them up with data.
+                        for (let j = 1; j <= 7; j++) {
+                            let curRow = $(`#row-${i}`);
+                            // console.log(curRow);
+                            if (i === 0 && j < firstDayOfCurrentMonth) {
+                                curRow.addElement('td', '');
+                                // let currentCell = $('td').elems.pop();
+                                // currentCell.setAttribute('class', 'next-month-days');
+                            }
+                            else if (date > daysInMonth(month, year)) {
+                            //     curRow.addElement('td', 1 + addDaysTillEnd);
+                            //     addDaysTillEnd++;
+                            //     let currentCell = $('td').elems.pop();
+                            //     currentCell.setAttribute('class', 'next-month-days');
+                            //     // console.log(addDaysTillEnd);
+                            //     //lastDayOfCurrentMonthNum
+                                break;
+                            }
+
+                            else {
+                                let cell = curRow.addElement('td', date);
+                                let currentCell = $('td').elems.pop();
+                                currentCell.setAttribute('id', `#cell-${date}`);
+                                if (date === today.getDate() &&
+                                    year === today.getFullYear() &&
+                                    month === today.getMonth()) {
+                                    currentCell.setAttribute('class', 'current-date');
+                                } // color today's date
+                                date++;
+                            }
+                        }
                 }
 
-                else {
-                    let cell = curRow.addElement('td', date);
-                    let currentCell = $('td').elems.pop();
-                    currentCell.setAttribute('id', `#cell-${date}`);
-                    // console.log(currentCell);
-                    // cell.addElement('div', 'No events on this date')
-                    //     .setAttribute('class', 'popup')
-                    //     .setAttribute('style', 'display: none');
-                    if (date === today.getDate() && year === today.getFullYear() && month === today.getMonth()) {
-                        currentCell.setAttribute('class', 'current-date');
-                    } // color today's date
-                    date++;
-                }
-            }
+                table.elems[0].id = '';
+                let rowToTake = $(`#row-${rowNumber}`);
+                console.log(rowToTake);
+                let dataCells = rowToTake.getChildren();
+                table.setAttribute('innerHtml', '');
+                console.log(table);
+                let row = table.addElement('tr');
+                // let row = $('tr').elems.pop();
+                row.setAttribute('id', `row-${rowNumber}`);
+                console.log(table);
+                // console.log(firstDayOfCurrentMonth);
+                dataCells.each(function (cell, key) {
+                    let date = cell.innerText;
+                    // console.log(key);
+                    // console.log(date);
+                    if (rowNumber === 0 && key < firstDayOfCurrentMonth - 1) {
+                        // console.log('test');
+                        row.addElement('td', '');
+                    }
+                    // else if (date > daysInMonth(month, year)) {
+                    //     break;
+                    // }
+
+                    else {
+                        let cell = row.addElement('td', date);
+                        // console.log(cell);
+                        let currentCell = $('td').elems.pop();
+                        currentCell.setAttribute('id', `#cell-${date}`);
+                        if (date === today.getDate() &&
+                            year === today.getFullYear() &&
+                            month === today.getMonth()) {
+                            currentCell.setAttribute('class', 'current-date');
+                        } // color today's date
+                        // date++;
+                    }
+                    // console.log(cell.innerText);
+                    // row.addElement()
+                });
         }
     }
 

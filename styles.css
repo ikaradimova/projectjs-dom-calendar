@@ -26,5 +26,14 @@ button{
 }
 
 .hide{
+    background-color: red;
     display: none;
+}
+
+.previous-month-days {
+    color: #CDCDCD;
+}
+
+.next-month-days{
+    color: #CDCDCD;
 }
