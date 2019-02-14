@@ -37,3 +37,15 @@ button{
 .next-month-days{
     color: #CDCDCD;
 }
+
+tr{
+    height: 5em;
+}
+
+#datepicker #nav{
+    width: 200px;
+}
+
+#datepicker tr{
+    height: 1em;
+}

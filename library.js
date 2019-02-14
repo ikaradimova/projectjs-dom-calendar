@@ -62,10 +62,10 @@ let $ = (function () {
         });
         return this;
     };
-    
+
     Constructor.prototype.toggleClass = function (className) {
         this.each(function (item) {
-            if(item.classList.contains(className)){
+            if (item.classList.contains(className)) {
                 item.classList.remove(className);
             } else {
                 item.classList.add(className);
@@ -111,7 +111,7 @@ let $ = (function () {
      * @returns {Constructor}
      */
     Constructor.prototype.setAttribute = function (attr, value) {
-        if(value === null || value === undefined){
+        if (value === null || value === undefined) {
             console.error('Value is required in setAttribute(attr, value).');
         } else {
             this.each(function (item) {
@@ -144,6 +144,43 @@ let $ = (function () {
             return this;
         }
     };
+
+
+    Constructor.prototype.getAttribute = function (attr) {
+        let attribute;
+        this.each(function (item) {
+            switch (attr) {
+                case 'id':
+                    // console.log(item);
+                    // console.log(item.id);
+                    attribute = item.id;
+                    break;
+                case 'class':
+                    attribute = item.className;
+                    break;
+                case 'data':
+                    attribute = item.data;
+                    break;
+                case 'value':
+                    attribute = item.attribute;
+                    break;
+                // case 'style':
+                //     item.style = value;
+                //     break;
+                case 'innerText':
+                case 'inner-text':
+                    // console.log(item.innerText);
+                    attribute = item.innerText;
+                    break;
+                case 'innerHtml':
+                case 'inner-html':
+                    attribute = item.innerHTML;
+            }
+        });
+
+        // return attribute;
+    };
+
 
     // /**
     //  * Function for setting inn

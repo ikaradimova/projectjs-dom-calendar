@@ -2,37 +2,25 @@ class CalendarComponent extends HTMLElement {
 
     type;
     options;
-    // today = new Date();
-    // currentMonth = this.today.getMonth();
-    // currentYear = this.today.getFullYear();
-    // selectYear = $('#year').elems[0];
-    // selectMonth = $('#month').elems[0];
-    // previousButton = $('#previous').elems[0];
-    // nextButton = $('#next').elems[0];
-    // today;
-    // currentMonth;
-    // currentYear;
-    // selectYear;
-    // selectMonth;
 
-    months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
+    /**
+     * Constructor
+     * @param type
+     * @param options
+     */
     constructor(type, options = '') {
         super();
         this.type = type;
         this.options = options;
-        this.today = new Date();
-        this.currentMonth = this.today.getMonth();
-        this.currentYear = this.today.getFullYear();
-        // this.selectYear = $('#year').elems[0];
-        // this.selectMonth = $('#month').elems[0];
-        // previousButton = $('#previous').elems[0];
-        // nextButton = $('#next').elems[0];
     }
 
+    /**
+     * Html template
+     * @param calendar
+     */
     calendar(calendar) {
         calendar.setAttribute('innerHtml', `
-            <div class="container col-sm-5">
+            <div class="container col-sm-11">
                 <div class="card">
                     <div class="form-inline" id="nav">
                         <button id="previous">&lsaquo;</button>
@@ -117,155 +105,66 @@ class CalendarComponent extends HTMLElement {
             
                         </tbody>
                     </table>
-                    <br/>
                 </div>
             </div>
         `);
     }
 
+    /**
+     * Getting type
+     */
     getType(){
         return this.type;
     }
 
+    /**
+     * Getting options
+     */
     getOptions(){
         return this.options;
     }
 
-    // previous(currentMonth, currentYear) {
-    //     currentYear = (currentMonth === 0) ? currentYear - 1 : currentYear;
-    //     currentMonth = (currentMonth === 0) ? 11 : currentMonth - 1;
-    //     this.showCalendar(currentMonth, currentYear);
-    //     if(this.type === 'calendar'){
-    //         this.addEvent();
-    //         this.showEvent();
-    //     }
-    // }
-    //
-    // next(currentMonth, currentYear) {
-    //     currentYear = (currentMonth === 11) ? currentYear + 1 : currentYear;
-    //     currentMonth = (currentMonth + 1) % 12;
-    //     this.showCalendar(currentMonth, currentYear);
-    //     if(this.type === 'calendar'){
-    //         this.addEvent();
-    //         this.showEvent();
-    //     }
-    // }
-    //
-    // jump(currentMonth, currentYear, selectMonth, selectYear) {
-    //     currentYear = parseInt(selectYear);
-    //     currentMonth = parseInt(selectMonth);
-    //     this.showCalendar(currentMonth, currentYear);
-    //     if(this.type === 'calendar'){
-    //         this.addEvent();
-    //         this.showEvent();
-    //     }
-    // }
-    //
-    // showCalendar(month, year, selectMonth, selectYear) {
-    //
-    //     console.log(month);
-    //     console.log(year);
-    //     // gets the first day of the current month and year
-    //     let firstDayOfCurrentMonth = (new Date(year, month)).getDay();
-    //
-    //     let table = $('#calendar-body'); // body of the calendar
-    //
-    //     // clearing all previous cells
-    //     table.setAttribute('innerHtml', '');
-    //
-    //     // console.log(this.selectYear);
-    //     // console.log(this.selectMonth);
-    //     selectMonth = month;
-    //     selectYear = year;
-    //
-    //     // creating all cells
-    //     let date = 1;
-    //     for (let i = 0; i < 6; i++) {
-    //         table.addElement('tr');
-    //         let row = $('tr').elems.pop();
-    //         row.setAttribute('id', `row-${i}`);
-    //
-    //         //creating individual cells, filing them up with data.
-    //         for (let j = 1; j <= 7; j++) {
-    //             let curRow = $(`#row-${i}`);
-    //             // console.log(curRow);
-    //             if (i === 0 && j < firstDayOfCurrentMonth) {
-    //                 curRow.addElement('td', '');
-    //             }
-    //             else if (date > this.daysInMonth(month, year)) {
-    //                 break;
-    //             }
-    //
-    //             else {
-    //                 let cell = curRow.addElement('td', date);
-    //                 let currentCell = $('td').elems.pop();
-    //                 currentCell.setAttribute('id', `#cell-${date}`);
-    //                 // console.log(currentCell);
-    //                 // cell.addElement('div', 'No events on this date')
-    //                 //     .setAttribute('class', 'popup')
-    //                 //     .setAttribute('style', 'display: none');
-    //                 if (date === this.today.getDate() &&
-    //                     year === this.today.getFullYear() &&
-    //                     month === this.today.getMonth()) {
-    //                     currentCell.setAttribute('class', 'current-date');
-    //                 } // color today's date
-    //                 date++;
-    //             }
-    //         }
-    //     }
-    //     return([selectYear, selectMonth]);
-    // }
-    //
-    // daysInMonth(month, year) {
-    //     return 32 - new Date(year, month, 32).getDate();
-    // }
-    //
-    // addEvent() {
-    //     $('td').elems.forEach(e => e.addEventListener('click', function () {
-    //         let eventDescription = prompt('Enter event: ');
-    //         let date = e.id.split('-').pop();
-    //         let eventDate = `${this.currentYear}-${this.months[this.currentMonth]}-${date}`;
-    //         e.innerHTML += `</br>${eventDescription}`;
-    //
-    //         let events = [];
-    //         if (localStorage.getItem('events') == null || localStorage.getItem('events') === '[]') {
-    //             let id = 1;
-    //             let event = {id, eventDescription, eventDate};
-    //             console.log(event);
-    //             events.push(event);
-    //             localStorage.setItem('events', JSON.stringify(events));
-    //         } else {
-    //             let id = JSON.parse(localStorage.getItem('events')).pop().id + 1;
-    //             let event = {id, eventDescription, eventDate};
-    //             console.log(event);
-    //             JSON.parse(localStorage.getItem('events')).forEach(function (item) {
-    //                 events.push(item);
-    //             });
-    //             events.push(event);
-    //             localStorage.setItem('events', JSON.stringify(events));
-    //         }
-    //     }));
-    // }
-    //
-    // showEvent() {
-    //     $('td').elems.forEach(function (element) {
-    //         if (localStorage.getItem('events')) {
-    //             let date = element.id.split('-').pop();
-    //             let currentEventDate = `${this.currentYear}-${this.months[this.currentMonth]}-${date}`;
-    //             let events = [];
-    //             JSON.parse(localStorage.getItem('events')).forEach(function (event) {
-    //                 events.push(event);
-    //             });
-    //
-    //             console.log(events);
-    //             events.forEach(function (event) {
-    //                 if (event.eventDate === currentEventDate) {
-    //                     element.innerHTML += `</br>${event.eventDescription}`;
-    //                 }
-    //             })
-    //         }
-    //     })
-    // }
+    /**
+     * Setting options
+     * @param options
+     */
+    setOptions(options){
+        this.options = options;
+    }
+
+    /**
+     * Setting type
+     * @param type
+     */
+    setType(type){
+        this.type = type;
+    }
+
+    /**
+     * Function that checks how many days are in a year
+     * @param month
+     * @param year
+     * @returns {number}
+     */
+    static daysInMonth(month, year) {
+        console.log(32 - new Date(year, month, 32).getDate());
+        return 32 - new Date(year, month, 32).getDate();
+    }
+
+    /**
+     * Function for calculating how many rows are there in a month
+     * @param month
+     * @param year
+     * @param firstDayOfCurrentMonth
+     * @returns {number}
+     */
+    static rowsInMonth(month, year, firstDayOfCurrentMonth){
+        let numberOfDaysInMonth = this.daysInMonth(month, year);
+        let daysLeftInFirstWeek = (7 - firstDayOfCurrentMonth) + 1;
+        let numberOfWeeksWithoutFirstOne = Math.ceil((numberOfDaysInMonth - daysLeftInFirstWeek)/7);
+        let numberOfAllWeeks = numberOfWeeksWithoutFirstOne + 1;
+        return numberOfAllWeeks;
+    }
 
 }
 

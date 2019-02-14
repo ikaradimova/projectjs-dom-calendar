@@ -3,7 +3,7 @@ window.addEventListener('load', function () {
     // adding calendar component
     let bodyElement = $('body').addElement('calendar-component');
     let calendar = $('calendar-component');
-    let calendarComponent = new CalendarComponent('calendar', 'week');
+    let calendarComponent = new CalendarComponent('calendar', 'month');
     calendarComponent.calendar(calendar);
     let calendarComponentType = calendarComponent.getOptions();
     console.log(calendarComponentType);
@@ -123,7 +123,6 @@ window.addEventListener('load', function () {
     });
 
     function showCalendar(month, year, rowNumber) {
-        console.log(rowNumber);
         // gets the first day of the current month and year
         let firstDayOfCurrentMonth = (new Date(year, month)).getDay();
         let lastDayOfLastMonthNum = (new Date(year, month, 0)).getDay();
@@ -144,7 +143,7 @@ window.addEventListener('load', function () {
         switch (calendarComponentType) {
             case 'month':
                 console.log(rowNumber);
-                for (let i = 0; i < 5; i++) {
+                for (let i = 0; i < CalendarComponent.rowsInMonth(month, year, firstDayOfCurrentMonth); i++) {
                     table.addElement('tr');
                     let row = $('tr').elems.pop();
                     row.setAttribute('id', `row-${i}`);
@@ -158,7 +157,7 @@ window.addEventListener('load', function () {
                             let currentCell = $('td').elems.pop();
                             currentCell.setAttribute('class', 'previous-month-days');
                         }
-                        else if (date > daysInMonth(month, year)) {
+                        else if (date > CalendarComponent.daysInMonth(month, year)) {
                             curRow.addElement('td', 1 + addDaysTillEnd);
                             addDaysTillEnd++;
                             let currentCell = $('td').elems.pop();
@@ -171,7 +170,7 @@ window.addEventListener('load', function () {
                         else {
                             let cell = curRow.addElement('td', date);
                             let currentCell = $('td').elems.pop();
-                            currentCell.setAttribute('id', `#cell-${date}`);
+                            currentCell.setAttribute('id', `cell-${date}`);
                             // console.log(currentCell);
                             // cell.addElement('div', 'No events on this date')
                             //     .setAttribute('class', 'popup')
@@ -206,7 +205,7 @@ window.addEventListener('load', function () {
                                 // let currentCell = $('td').elems.pop();
                                 // currentCell.setAttribute('class', 'next-month-days');
                             }
-                            else if (date > daysInMonth(month, year)) {
+                            else if (date > CalendarComponent.daysInMonth(month, year)) {
                             //     curRow.addElement('td', 1 + addDaysTillEnd);
                             //     addDaysTillEnd++;
                             //     let currentCell = $('td').elems.pop();
@@ -219,7 +218,7 @@ window.addEventListener('load', function () {
                             else {
                                 let cell = curRow.addElement('td', date);
                                 let currentCell = $('td').elems.pop();
-                                currentCell.setAttribute('id', `#cell-${date}`);
+                                currentCell.setAttribute('id', `cell-${date}`);
                                 if (date === today.getDate() &&
                                     year === today.getFullYear() &&
                                     month === today.getMonth()) {
@@ -236,6 +235,7 @@ window.addEventListener('load', function () {
                 let dataCells = rowToTake.getChildren();
                 table.setAttribute('innerHtml', '');
                 console.log(table);
+                table.addElement('tr');
                 let row = table.addElement('tr');
                 // let row = $('tr').elems.pop();
                 row.setAttribute('id', `row-${rowNumber}`);
@@ -257,7 +257,7 @@ window.addEventListener('load', function () {
                         let cell = row.addElement('td', date);
                         // console.log(cell);
                         let currentCell = $('td').elems.pop();
-                        currentCell.setAttribute('id', `#cell-${date}`);
+                        currentCell.setAttribute('id', `cell-${date}`);
                         if (date === today.getDate() &&
                             year === today.getFullYear() &&
                             month === today.getMonth()) {
@@ -269,12 +269,6 @@ window.addEventListener('load', function () {
                     // row.addElement()
                 });
         }
-    }
-
-
-// check how many days in a month code
-    function daysInMonth(iMonth, iYear) {
-        return 32 - new Date(iYear, iMonth, 32).getDate();
     }
 
     function addEvent() {
