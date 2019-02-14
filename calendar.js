@@ -1,13 +1,33 @@
-window.addEventListener('load', function () {
-    localStorage.clear();
-    // adding calendar component
-    let bodyElement = $('body').addElement('calendar-component');
-    let calendar = $('calendar-component');
-    let calendarComponent = new CalendarComponent('calendar', 'week');
-    calendarComponent.calendar(calendar);
-    let calendarComponentType = calendarComponent.getOptions();
-    console.log(calendarComponentType);
 
+let viewToggle = $('#viewToggle').elems[0];
+
+viewToggle.addEventListener('click', function () {
+    if(viewToggle.innerText.toLowerCase() === 'month view'){
+        console.log('week');
+        // let bodyElement = $('body').addElement('calendar-component');
+        let calendar = $('calendar-component');
+        calendar.innerHTML = '';
+        console.log(calendar);
+        let calendarComponent = new CalendarComponent('calendar', 'month');
+        calendarComponent.calendar(calendar);
+        let calendarComponentType = calendarComponent.getOptions();
+        $('#viewToggle').setAttribute('innerHtml', 'Week view');
+        createCalendar('month');
+    } else if(viewToggle.innerText.toLowerCase() === 'week view'){
+        console.log('month');
+        // let bodyElement = $('body').addElement('calendar-component');
+        let calendar = $('calendar-component');
+        calendar.innerHTML = '';
+        console.log(calendar);
+        let calendarComponent = new CalendarComponent('calendar', 'week');
+        calendarComponent.calendar(calendar);
+        $('#viewToggle').setAttribute('innerHtml', 'Month view');
+        let calendarComponentType = calendarComponent.getOptions();
+        createCalendar('week');
+    }
+});
+
+function createCalendar(calendarComponentType){
     let today = new Date();
     let currentMonth = today.getMonth();
     let currentYear = today.getFullYear();
@@ -84,7 +104,7 @@ window.addEventListener('load', function () {
                 if((startWeek === CalendarComponent.rowsInMonth(currentMonth, currentYear) - 2 &&
                         CalendarComponent.getNumberOfDaysInLastMonthWeek(currentMonth, currentYear) !== 0) ||
                     (startWeek === CalendarComponent.rowsInMonth(currentMonth, currentYear) - 1 &&
-                    CalendarComponent.getNumberOfDaysInLastMonthWeek(currentMonth, currentYear) === 0)
+                        CalendarComponent.getNumberOfDaysInLastMonthWeek(currentMonth, currentYear) === 0)
                 ){
                     startWeek = -1;
                     currentYear = (currentMonth === 11) ? currentYear + 1 : currentYear;
@@ -364,5 +384,19 @@ window.addEventListener('load', function () {
             }
         })
     }
+
+}
+
+window.addEventListener('load', function () {
+    localStorage.clear();
+    // adding calendar component
+    let bodyElement = $('body').addElement('calendar-component');
+    let calendar = $('calendar-component');
+    let calendarComponent = new CalendarComponent('calendar', 'week');
+    calendarComponent.calendar(calendar);
+    let calendarComponentType = calendarComponent.getOptions();
+    // console.log(calendarComponentType);
+    createCalendar('month');
+
 
 });
