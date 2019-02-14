@@ -42,7 +42,7 @@ let $ = (function () {
     };
 
     /**
-     * Add a class to elements
+     * Function for adding new class name
      * @param {String} className The class name
      */
     Constructor.prototype.addClass = function (className) {
@@ -53,7 +53,7 @@ let $ = (function () {
     };
 
     /**
-     * Delete a class to elements
+     * Function for deleting class name
      * @param {String} className The class name
      */
     Constructor.prototype.deleteClass = function (className) {
@@ -63,6 +63,10 @@ let $ = (function () {
         return this;
     };
 
+    /**
+     * Function for toggling class name
+     * @param className
+     */
     Constructor.prototype.toggleClass = function (className) {
         this.each(function (item) {
             if (item.classList.contains(className)) {
@@ -146,6 +150,10 @@ let $ = (function () {
     };
 
 
+    /**
+     * Function for getting a attribute
+     * @param attr
+     */
     Constructor.prototype.getAttribute = function (attr) {
         let attribute;
         this.each(function (item) {

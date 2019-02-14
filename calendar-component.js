@@ -147,7 +147,6 @@ class CalendarComponent extends HTMLElement {
      * @returns {number}
      */
     static daysInMonth(month, year) {
-        console.log(32 - new Date(year, month, 32).getDate());
         return 32 - new Date(year, month, 32).getDate();
     }
 
@@ -155,15 +154,27 @@ class CalendarComponent extends HTMLElement {
      * Function for calculating how many rows are there in a month
      * @param month
      * @param year
-     * @param firstDayOfCurrentMonth
      * @returns {number}
      */
-    static rowsInMonth(month, year, firstDayOfCurrentMonth){
+    static rowsInMonth(month, year){
+        let firstDayOfCurrentMonth = (new Date(year, month)).getDay();
         let numberOfDaysInMonth = this.daysInMonth(month, year);
         let daysLeftInFirstWeek = (7 - firstDayOfCurrentMonth) + 1;
         let numberOfWeeksWithoutFirstOne = Math.ceil((numberOfDaysInMonth - daysLeftInFirstWeek)/7);
         let numberOfAllWeeks = numberOfWeeksWithoutFirstOne + 1;
+        console.log(numberOfAllWeeks);
         return numberOfAllWeeks;
+    }
+
+    static getNumberOfDaysInLastMonthWeek(month, year){
+        let firstDayOfCurrentMonth = (new Date(year, month)).getDay();
+        let numberOfDaysInMonth = this.daysInMonth(month, year);
+        let daysLeftInFirstWeek = (7 - firstDayOfCurrentMonth) + 1;
+        let daysLeftInOtherWeeks = numberOfDaysInMonth - daysLeftInFirstWeek;
+        let numberOfDaysInLastWeek = daysLeftInOtherWeeks % 7;
+        console.log(numberOfDaysInLastWeek);
+        return numberOfDaysInLastWeek;
+
     }
 
 }

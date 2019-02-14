@@ -91,13 +91,13 @@ window.addEventListener('load', function () {
         selectYear.value = year;
         selectMonth.value = month;
 
-        /** current cell */
+        /** date of month/begging with 1 */
         let date = 1;
         /** helper variable for counting the days from the next month that are filling the last row */
         let addDaysTillEnd = 0;
 
         /** creating cells */
-        for (let i = 0; i < CalendarComponent.rowsInMonth(month, year, firstDayOfCurrentMonth); i++) {
+        for (let i = 0; i < CalendarComponent.rowsInMonth(month, year); i++) {
             /** creating row*/
             table.addElement('tr');
             let row = $('tr').elems.pop();
