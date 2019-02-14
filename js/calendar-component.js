@@ -113,14 +113,14 @@ class CalendarComponent extends HTMLElement {
     /**
      * Getting type
      */
-    getType(){
+    getType() {
         return this.type;
     }
 
     /**
      * Getting options
      */
-    getOptions(){
+    getOptions() {
         return this.options;
     }
 
@@ -128,7 +128,7 @@ class CalendarComponent extends HTMLElement {
      * Setting options
      * @param options
      */
-    setOptions(options){
+    setOptions(options) {
         this.options = options;
     }
 
@@ -136,7 +136,7 @@ class CalendarComponent extends HTMLElement {
      * Setting type
      * @param type
      */
-    setType(type){
+    setType(type) {
         this.type = type;
     }
 
@@ -156,27 +156,29 @@ class CalendarComponent extends HTMLElement {
      * @param year
      * @returns {number}
      */
-    static rowsInMonth(month, year){
+    static rowsInMonth(month, year) {
         let firstDayOfCurrentMonth = (new Date(year, month)).getDay();
         let numberOfDaysInMonth = this.daysInMonth(month, year);
         let daysLeftInFirstWeek = (7 - firstDayOfCurrentMonth) + 1;
-        let numberOfWeeksWithoutFirstOne = Math.ceil((numberOfDaysInMonth - daysLeftInFirstWeek)/7);
+        let numberOfWeeksWithoutFirstOne = Math.ceil((numberOfDaysInMonth - daysLeftInFirstWeek) / 7);
         let numberOfAllWeeks = numberOfWeeksWithoutFirstOne + 1;
-        console.log(numberOfAllWeeks);
         return numberOfAllWeeks;
     }
 
-    static getNumberOfDaysInLastMonthWeek(month, year){
+    /**
+     * Function for getting how many days are in the last week of the month
+     * @param month
+     * @param year
+     * @returns {number}
+     */
+    static getNumberOfDaysInLastMonthWeek(month, year) {
         let firstDayOfCurrentMonth = (new Date(year, month)).getDay();
         let numberOfDaysInMonth = this.daysInMonth(month, year);
         let daysLeftInFirstWeek = (7 - firstDayOfCurrentMonth) + 1;
         let daysLeftInOtherWeeks = numberOfDaysInMonth - daysLeftInFirstWeek;
         let numberOfDaysInLastWeek = daysLeftInOtherWeeks % 7;
-        console.log(numberOfDaysInLastWeek);
         return numberOfDaysInLastWeek;
-
     }
-
 }
 
 customElements.define('calendar-component', CalendarComponent);

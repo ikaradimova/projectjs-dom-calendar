@@ -152,16 +152,16 @@ window.addEventListener('load', function () {
             let date = e.id.split('-').pop();
             let eventDate;
             /** checks if clicked date is from previous month */
-            if(e.classList.contains('previous-month-days')){
-                if(currentMonth - 1 < 0){
+            if (e.classList.contains('previous-month-days')) {
+                if (currentMonth - 1 < 0) {
                     eventDate = `${currentYear - 1}-${months[11]}-${date}`;
                 } else {
                     eventDate = `${currentYear}-${months[currentMonth - 1]}-${date}`;
                 }
             }
             /** checks if clicked date is from next month */
-            else if(e.classList.contains('next-month-days')){
-                if(calendarComponent = 11){
+            else if (e.classList.contains('next-month-days')) {
+                if (currentMonth === 11) {
                     eventDate = `${currentYear + 1}-${months[0]}-${date}`;
                 } else {
                     eventDate = `${currentYear}-${months[currentMonth + 1]}-${date}`;
@@ -176,8 +176,6 @@ window.addEventListener('load', function () {
             datepickerInput.elems[0].setAttribute('value', eventDate);
         }));
     }
-
-
 });
 
 /** Hiding datepicker on click outside of datepicker container or on clicking again in the input */

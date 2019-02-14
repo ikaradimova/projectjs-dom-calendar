@@ -1,5 +1,4 @@
 let $ = (function () {
-
     'use strict';
 
     /**
@@ -103,7 +102,6 @@ let $ = (function () {
     Constructor.prototype.deleteElement = function () {
         this.each(function (item) {
             item.remove();
-            // item.parentNode.removeChild(item);
         });
         return this;
     };
@@ -144,11 +142,9 @@ let $ = (function () {
                         item.innerHTML = value;
                 }
             });
-
             return this;
         }
     };
-
 
     /**
      * Function for getting a attribute
@@ -159,8 +155,6 @@ let $ = (function () {
         this.each(function (item) {
             switch (attr) {
                 case 'id':
-                    // console.log(item);
-                    // console.log(item.id);
                     attribute = item.id;
                     break;
                 case 'class':
@@ -172,12 +166,8 @@ let $ = (function () {
                 case 'value':
                     attribute = item.attribute;
                     break;
-                // case 'style':
-                //     item.style = value;
-                //     break;
                 case 'innerText':
                 case 'inner-text':
-                    // console.log(item.innerText);
                     attribute = item.innerText;
                     break;
                 case 'innerHtml':
@@ -185,34 +175,8 @@ let $ = (function () {
                     attribute = item.innerHTML;
             }
         });
-
-        // return attribute;
+        return attribute;
     };
-
-
-    // /**
-    //  * Function for setting inn
-    //  * @param text
-    //  * @returns {Constructor}
-    //  */
-    // Constructor.prototype.setInnerText = function (text) {
-    //     this.each(function (item) {
-    //         item.innerText = text;
-    //     });
-    //     return this;
-    // };
-    //
-    // /**
-    //  *
-    //  * @param innerHtml
-    //  * @returns {Constructor}
-    //  */
-    // Constructor.prototype.setInnerHtml = function (innerHtml) {
-    //     this.each(function (item) {
-    //         item.innerHTML = innerHtml;
-    //     });
-    //     return this;
-    // };
 
     /**
      * Function for getting the parent(s) of the element(s)
@@ -236,7 +200,6 @@ let $ = (function () {
             let itemChildren = Array.from(item.children);
             itemChildren.forEach(function (child) {
                 children.elems.push(child);
-
             });
         });
         return children;

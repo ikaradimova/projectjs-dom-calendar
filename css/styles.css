@@ -3,7 +3,7 @@
     justify-content: space-between;
 }
 
-.current-date{
+.current-date {
     background-color: #d4f8d4;
 }
 
@@ -15,17 +15,17 @@ tr:nth-child(odd) {
     background-color: #fff;
 }
 
-td:hover{
+td:hover {
     background-color: #f6fef6;
 }
 
-button{
+button {
     background-color: transparent;
     border-color: transparent;
     font-size: large;
 }
 
-.hide{
+.hide {
     background-color: red;
     display: none;
 }
@@ -34,18 +34,23 @@ button{
     color: #CDCDCD;
 }
 
-.next-month-days{
+.next-month-days {
     color: #CDCDCD;
 }
 
-tr{
+tr {
     height: 5em;
 }
 
-#datepicker #nav{
+#datepicker #nav {
     width: 200px;
 }
 
-#datepicker tr{
+#datepicker tr {
     height: 1em;
+}
+
+#viewToggle {
+    margin: 0 auto;
+    display: block;
 }

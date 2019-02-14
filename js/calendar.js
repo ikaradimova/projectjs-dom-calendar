@@ -1,33 +1,46 @@
-
 let viewToggle = $('#viewToggle').elems[0];
 
+/** initial calendar creation on load */
+window.addEventListener('load', function () {
+    /** clearing localStorage */
+    localStorage.clear();
+    /** attaching calendar component tag to body */
+    $('body').addElement('calendar-component');
+    let calendar = $('calendar-component');
+    /** creating new calendarComponent */
+    let calendarComponent = new CalendarComponent('calendar', 'week');
+    calendarComponent.calendar(calendar);
+    createCalendar('month');
+});
+
+/** toggling month and week views */
 viewToggle.addEventListener('click', function () {
-    if(viewToggle.innerText.toLowerCase() === 'month view'){
-        console.log('week');
-        // let bodyElement = $('body').addElement('calendar-component');
-        let calendar = $('calendar-component');
-        calendar.innerHTML = '';
-        console.log(calendar);
+    /** getting calendar component */
+    let calendar = $('calendar-component');
+    /** clearing calendar */
+    calendar.innerHTML = '';
+    if (viewToggle.innerText.toLowerCase() === 'month view') {
+        /** creating new calendarComponent */
         let calendarComponent = new CalendarComponent('calendar', 'month');
         calendarComponent.calendar(calendar);
-        let calendarComponentType = calendarComponent.getOptions();
+        /** changing toggle button's text */
         $('#viewToggle').setAttribute('innerHtml', 'Week view');
         createCalendar('month');
-    } else if(viewToggle.innerText.toLowerCase() === 'week view'){
-        console.log('month');
-        // let bodyElement = $('body').addElement('calendar-component');
-        let calendar = $('calendar-component');
-        calendar.innerHTML = '';
-        console.log(calendar);
+    } else if (viewToggle.innerText.toLowerCase() === 'week view') {
+        /** creating new calendarComponent */
         let calendarComponent = new CalendarComponent('calendar', 'week');
         calendarComponent.calendar(calendar);
+        /** changing toggle button's text */
         $('#viewToggle').setAttribute('innerHtml', 'Month view');
-        let calendarComponentType = calendarComponent.getOptions();
         createCalendar('week');
     }
 });
 
-function createCalendar(calendarComponentType){
+/**
+ * Function for creating calendar
+ * @param calendarComponentType
+ */
+function createCalendar(calendarComponentType) {
     let today = new Date();
     let currentMonth = today.getMonth();
     let currentYear = today.getFullYear();
@@ -35,10 +48,7 @@ function createCalendar(calendarComponentType){
     let selectMonth = $('#month').elems[0];
     let previousButton = $('#previous').elems[0];
     let nextButton = $('#next').elems[0];
-    let firstDayOfCurrentMonth = (new Date(currentYear, currentMonth)).getDay();
-
     let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
     let startWeek = 0;
 
     /** initial showing calendar depending on it's view (month/week) */
@@ -50,8 +60,6 @@ function createCalendar(calendarComponentType){
             showCalendar(currentMonth, currentYear, startWeek);
             break;
     }
-
-    CalendarComponent.getNumberOfDaysInLastMonthWeek(currentMonth, currentYear);
 
     /** adding and showing events */
     addEvent();
@@ -66,25 +74,22 @@ function createCalendar(calendarComponentType){
                 currentYear = (currentMonth === 0) ? currentYear - 1 : currentYear;
                 currentMonth = (currentMonth === 0) ? 11 : currentMonth - 1;
                 showCalendar(currentMonth, currentYear);
-
                 break;
             case 'week':
-                CalendarComponent.getNumberOfDaysInLastMonthWeek(currentMonth, currentYear);
-                if(startWeek === 0){
+                if (startWeek === 0) {
                     currentYear = (currentMonth === 0) ? currentYear - 1 : currentYear;
                     currentMonth = (currentMonth === 0) ? 11 : currentMonth - 1;
-                    if(CalendarComponent.getNumberOfDaysInLastMonthWeek(currentMonth - 1, currentYear === 0)){
-                        startWeek = CalendarComponent.rowsInMonth(currentMonth - 1, currentYear);
+                    if (CalendarComponent.getNumberOfDaysInLastMonthWeek(currentMonth - 1, currentYear) === 0) {
+                        startWeek = CalendarComponent.rowsInMonth(currentMonth, currentYear);
                     } else {
-                        startWeek = CalendarComponent.rowsInMonth(currentMonth - 1, currentYear) - 1;
+                        startWeek = CalendarComponent.rowsInMonth(currentMonth, currentYear) - 1;
+                        console.log(startWeek);
                     }
                 }
                 startWeek--;
                 showCalendar(currentMonth, currentYear, startWeek);
                 break;
         }
-        CalendarComponent.getNumberOfDaysInLastMonthWeek(currentMonth, currentYear);
-
         addEvent();
         showEvent();
     }
@@ -100,22 +105,19 @@ function createCalendar(calendarComponentType){
                 showCalendar(currentMonth, currentYear);
                 break;
             case 'week':
-                // startWeek++;
-                if((startWeek === CalendarComponent.rowsInMonth(currentMonth, currentYear) - 2 &&
+                if ((startWeek === CalendarComponent.rowsInMonth(currentMonth, currentYear) - 2 &&
                         CalendarComponent.getNumberOfDaysInLastMonthWeek(currentMonth, currentYear) !== 0) ||
                     (startWeek === CalendarComponent.rowsInMonth(currentMonth, currentYear) - 1 &&
                         CalendarComponent.getNumberOfDaysInLastMonthWeek(currentMonth, currentYear) === 0)
-                ){
+                ) {
                     startWeek = -1;
                     currentYear = (currentMonth === 11) ? currentYear + 1 : currentYear;
                     currentMonth = (currentMonth + 1) % 12;
                 }
-                console.log(++startWeek);
+                startWeek++;
                 showCalendar(currentMonth, currentYear, startWeek);
-                // startWeek++;
                 break;
         }
-        CalendarComponent.getNumberOfDaysInLastMonthWeek(currentMonth, currentYear);
         addEvent();
         showEvent();
     }
@@ -136,8 +138,6 @@ function createCalendar(calendarComponentType){
                 showCalendar(currentMonth, currentYear, 0);
                 break;
         }
-        CalendarComponent.getNumberOfDaysInLastMonthWeek(currentMonth, currentYear);
-
         addEvent();
         showEvent();
     }
@@ -184,95 +184,50 @@ function createCalendar(calendarComponentType){
         let addDaysTillEnd = 0;
 
         for (let i = 0; i < CalendarComponent.rowsInMonth(month, year); i++) {
+            /** creating new rows */
             table.addElement('tr');
             let row = $('tr').elems.pop();
             row.setAttribute('id', `row-${i}`);
 
-            //creating individual cells, filing them up with data.
+            /** creating cells for each row */
             for (let j = 1; j <= 7; j++) {
+                /** current row */
                 let curRow = $(`#row-${i}`);
-                // console.log(curRow);
+                /** days from previous month */
                 if (i === 0 && j < firstDayOfCurrentMonth) {
                     curRow.addElement('td', lastDayOfLastMonth - lastDayOfLastMonthNum + j);
                     let currentCell = $('td').elems.pop();
                     currentCell.setAttribute('class', 'previous-month-days');
+                    currentCell.setAttribute('id', `cell-${lastDayOfLastMonth - lastDayOfLastMonthNum + j}`);
                 }
+                /** days from next month */
                 else if (date > CalendarComponent.daysInMonth(month, year)) {
                     curRow.addElement('td', 1 + addDaysTillEnd);
                     addDaysTillEnd++;
                     let currentCell = $('td').elems.pop();
                     currentCell.setAttribute('class', 'next-month-days');
-                    // console.log(addDaysTillEnd);
-                    //lastDayOfCurrentMonthNum
-                    // break;
+                    currentCell.setAttribute('id', `cell-${1 + addDaysTillEnd}`);
                 }
-
+                /** current month cells */
                 else {
-                    let cell = curRow.addElement('td', date);
+                    curRow.addElement('td', date);
                     let currentCell = $('td').elems.pop();
                     currentCell.setAttribute('id', `cell-${date}`);
-                    // console.log(currentCell);
-                    // cell.addElement('div', 'No events on this date')
-                    //     .setAttribute('class', 'popup')
-                    //     .setAttribute('style', 'display: none');
+                    /** current date */
                     if (date === today.getDate() &&
                         year === today.getFullYear() &&
                         month === today.getMonth()) {
                         currentCell.setAttribute('class', 'current-date');
-                    } // color today's date
+                    }
+                    /** increasing date */
                     date++;
                 }
             }
         }
 
         switch (calendarComponentType) {
-            // case 'month':
-            //
-            //     break;
+            /** if week view */
             case 'week':
-                // console.log(rowNumber);
-                // // let i = 0;
-                // // while (i <= rowNumber) {
-                // for (let i = 0; i <= rowNumber; i++) {
-                //     // console.log(i);
-                //     //     console.log(rowNumber);
-                //         table.addElement('tr');
-                //         let row = $('tr').elems.pop();
-                //         row.setAttribute('id', `row-${i}`);
-                //
-                //         //creating individual cells, filing them up with data.
-                //         for (let j = 1; j <= 7; j++) {
-                //             let curRow = $(`#row-${i}`);
-                //             // console.log(curRow);
-                //             if (i === 0 && j < firstDayOfCurrentMonth) {
-                //                 curRow.addElement('td', '');
-                //                 // let currentCell = $('td').elems.pop();
-                //                 // currentCell.setAttribute('class', 'next-month-days');
-                //             }
-                //             else if (date > CalendarComponent.daysInMonth(month, year)) {
-                //             //     curRow.addElement('td', 1 + addDaysTillEnd);
-                //             //     addDaysTillEnd++;
-                //             //     let currentCell = $('td').elems.pop();
-                //             //     currentCell.setAttribute('class', 'next-month-days');
-                //             //     // console.log(addDaysTillEnd);
-                //             //     //lastDayOfCurrentMonthNum
-                //                 break;
-                //             }
-                //
-                //             else {
-                //                 let cell = curRow.addElement('td', date);
-                //                 let currentCell = $('td').elems.pop();
-                //                 currentCell.setAttribute('id', `cell-${date}`);
-                //                 if (date === today.getDate() &&
-                //                     year === today.getFullYear() &&
-                //                     month === today.getMonth()) {
-                //                     currentCell.setAttribute('class', 'current-date');
-                //                 } // color today's date
-                //                 date++;
-                //             }
-                //         }
-                // }
-
                 table.elems[0].id = '';
                 /** getting the row we want */
                 let rowToTake = $(`#row-${rowNumber}`);
@@ -281,49 +236,41 @@ function createCalendar(calendarComponentType){
                 /** clearing calendar body */
                 table.setAttribute('innerHtml', '');
                 /** creating new row in calendar */
-                // table.addElement('tr');
                 table.addElement('tr');
                 let row = $('tr').elems.pop();
                 row.setAttribute('id', `row-${rowNumber}`);
-                // row = row.elems[0];
                 /** getting current row */
                 let curRow = $(`#row-${rowNumber}`);
-                // console.log(firstDayOfCurrentMonth);
                 /** recreating cells in new row */
                 dataCells.each(function (cell, key) {
                     let date = cell.innerText;
-                    // console.log(key);
-                    // console.log(date);
+                    /** days from previous month */
                     if (rowNumber === 0 && key < firstDayOfCurrentMonth - 1) {
-                        // console.log('test');
                         curRow.addElement('td', date);
                         let currentCell = $('td').elems.pop();
                         currentCell.setAttribute('class', 'previous-month-days');
+                        currentCell.setAttribute('id', `cell-${date}`);
                     }
-                    // else if (date > CalendarComponent.daysInMonth(month, year)) {
-                    //     curRow.addElement('td', date);
-                    //     addDaysTillEnd++;
-                    //     let currentCell = $('td').elems.pop();
-                    //     currentCell.setAttribute('class', 'next-month-days');
-                    //     // console.log(addDaysTillEnd);
-                    //     //lastDayOfCurrentMonthNum
-                    //     // break;
-                    // }
-
-                    else {
-                        let cell = curRow.addElement('td', date);
-                        // console.log(cell);
+                    /** days from next month */
+                    else if (date > CalendarComponent.daysInMonth(month, year)) {
+                        curRow.addElement('td', date);
+                        addDaysTillEnd++;
                         let currentCell = $('td').elems.pop();
+                        currentCell.setAttribute('class', 'next-month-days');
+                        currentCell.setAttribute('id', `cell-${date}`);
+                    }
+                    /** days from current month */
+                    else {
+                        curRow.addElement('td', date);
+                        let currentCell = $('td').elems.pop();
+                        currentCell.setAttribute('id', `cell-${date}`);
                         currentCell.setAttribute('id', `cell-${date}`);
                         if (date === today.getDate() &&
                             year === today.getFullYear() &&
                             month === today.getMonth()) {
                             currentCell.setAttribute('class', 'current-date');
-                        } // color today's date
-                        // date++;
+                        }
                     }
-                    // console.log(cell.innerText);
-                    // row.addElement()
                 });
         }
     }
@@ -337,10 +284,35 @@ function createCalendar(calendarComponentType){
             let eventDescription = prompt('Enter event: ');
             /** getting date and formatting it */
             let date = e.id.split('-').pop();
-            let eventDate = `${currentYear}-${months[currentMonth]}-${date}`;
+            let eventDate;
+            /** checks if clicked date is from previous month */
+            if (e.classList.contains('previous-month-days')) {
+                if (currentMonth - 1 < 0) {
+                    eventDate = `${currentYear - 1}-${months[11]}-${date}`;
+                } else {
+                    eventDate = `${currentYear}-${months[currentMonth - 1]}-${date}`;
+                }
+            }
+            /** checks if clicked date is from next month */
+            else if (e.classList.contains('next-month-days')) {
+                if (currentMonth === 11) {
+                    eventDate = `${currentYear + 1}-${months[0]}-${date}`;
+                } else {
+                    eventDate = `${currentYear}-${months[currentMonth + 1]}-${date}`;
+                }
+            }
+            /** date from current month */
+            else {
+                eventDate = `${currentYear}-${months[currentMonth]}-${date}`;
+            }
+
+            /** checks if event description is empty */
+            if (eventDescription === null || eventDescription.length <= 0) {
+                return;
+            }
+
             /** adding event in data cell */
             e.innerHTML += `</br>${eventDescription}`;
-
             /** storing events in localStorage */
             let events = [];
             if (localStorage.getItem('events') == null || localStorage.getItem('events') === '[]') {
@@ -362,13 +334,39 @@ function createCalendar(calendarComponentType){
         }));
     }
 
+    /**
+     * Function for showing events
+     */
     function showEvent() {
-        $('td').elems.forEach(function (element) {
+        $('td').elems.forEach(function (e) {
             /** checking if there are any events created */
             if (localStorage.getItem('events')) {
                 /** getting date and formatting it */
-                let date = element.id.split('-').pop();
-                let currentEventDate = `${currentYear}-${months[currentMonth]}-${date}`;
+                let date = e.id.split('-').pop();
+                let currentEventDate;
+                /** checks if clicked date is from previous month */
+                if (e.classList.contains('previous-month-days')) {
+                    if (currentMonth - 1 < 0) {
+                        currentEventDate = `${currentYear - 1}-${months[11]}-${date}`;
+                    } else {
+                        currentEventDate = `${currentYear}-${months[currentMonth - 1]}-${date}`;
+                    }
+                }
+                /** checks if clicked date is from next month */
+                else if (e.classList.contains('next-month-days')) {
+                    if (currentMonth === 11) {
+                        currentEventDate = `${currentYear + 1}-${months[0]}-${date}`;
+                    } else {
+                        currentEventDate = `${currentYear}-${months[currentMonth + 1]}-${date}`;
+                    }
+                }
+                /** date from current month */
+                else {
+                    currentEventDate = `${currentYear}-${months[currentMonth]}-${date}`;
+                }
+
+                // let currentEventDate = `${currentYear}-${months[currentMonth]}-${date}`;
+                // console.log(currentEventDate);
 
                 let events = [];
                 JSON.parse(localStorage.getItem('events')).forEach(function (event) {
@@ -378,25 +376,10 @@ function createCalendar(calendarComponentType){
                 /** showing event in data cell */
                 events.forEach(function (event) {
                     if (event.eventDate === currentEventDate) {
-                        element.innerHTML += `</br>${event.eventDescription}`;
+                        e.innerHTML += `</br>${event.eventDescription}`;
                     }
                 })
             }
         })
     }
-
 }
-
-window.addEventListener('load', function () {
-    localStorage.clear();
-    // adding calendar component
-    let bodyElement = $('body').addElement('calendar-component');
-    let calendar = $('calendar-component');
-    let calendarComponent = new CalendarComponent('calendar', 'week');
-    calendarComponent.calendar(calendar);
-    let calendarComponentType = calendarComponent.getOptions();
-    // console.log(calendarComponentType);
-    createCalendar('month');
-
-
-});
